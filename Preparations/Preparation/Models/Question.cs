@@ -7,14 +7,14 @@ namespace Preparation.Models
         Guid Id { get; set; }
 
         [DisplayName("Вопросс")]
-        string Name { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         [DisplayName("Ответ")]
-        string Answer { get; set; } = string.Empty;
+        public string Answer { get; set; } = string.Empty;
 
 
-
-        Guid SubjectId { get; set; }
-        Subject Subject { get; set; }
+        [DisplayName("Тема")]
+        public Guid? SubjectId { get; set; }
+        public Subject? Subject { get; set; }
     }
 }
