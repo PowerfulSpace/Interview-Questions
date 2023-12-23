@@ -16,14 +16,14 @@ namespace Preparation.Repositories
 
         public async Task<List<Question>> GetItemsAsync()
         {
-            var items = await _context.Questions.AsNoTracking().Include(x => x.Answer).ToListAsync();
+            var items = await _context.Questions.AsNoTracking().Include(x => x.Subject).ToListAsync();
 
             return items;
         }
 
         public async Task<Question> GetItemAsync(Guid id)
         {
-            var item = await _context.Questions.Include(x => x.Answer).FirstOrDefaultAsync(x => x.Id == id);
+            var item = await _context.Questions.Include(x => x.Subject).FirstOrDefaultAsync(x => x.Id == id);
 
             return item;
         }
