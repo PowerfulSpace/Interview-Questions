@@ -4,7 +4,7 @@ namespace Preparation.Models
 {
     public class Question
     {
-        Guid Id { get; set; }
+        public Guid Id { get; set; }
 
         [DisplayName("Вопросс")]
         public string Name { get; set; } = string.Empty;

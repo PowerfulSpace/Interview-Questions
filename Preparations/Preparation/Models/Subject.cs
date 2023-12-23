@@ -5,7 +5,7 @@ namespace Preparation.Models
 {
     public class Subject
     {
-        Guid Id { get; set; }
+        public Guid Id { get; set; }
 
         [DisplayName("Тема")]
         public string Name { get; set; } = string.Empty;

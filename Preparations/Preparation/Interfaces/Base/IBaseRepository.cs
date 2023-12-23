@@ -1,6 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-
-namespace Preparation.Interfaces.Base
+﻿namespace Preparation.Interfaces.Base
 {
     public interface IBaseRepository<T>
     {
