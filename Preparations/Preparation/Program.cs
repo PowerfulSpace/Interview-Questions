@@ -1,4 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Preparation.Data;
+using Preparation.Interfaces;
+using Preparation.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ApplicationContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<ISubject, SubjectRepository>();
+builder.Services.AddScoped<IQuestion, QuestionRepository>();
 
 builder.Services.AddControllersWithViews();
 

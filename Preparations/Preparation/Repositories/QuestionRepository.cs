@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Preparation.Data;
+using Preparation.Interfaces;
 using Preparation.Models;
 
 namespace Preparation.Repositories
 {
-    public class QuestionRepository
+    public class QuestionRepository : IQuestion
     {
         private readonly ApplicationContext _context;
 
