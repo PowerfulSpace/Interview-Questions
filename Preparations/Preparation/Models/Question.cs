@@ -13,8 +13,9 @@ namespace Preparation.Models
         public string Answer { get; set; } = string.Empty;
 
 
-        [DisplayName("Тема")]
+        
         public Guid? SubjectId { get; set; }
+        [DisplayName("Тема")]
         public Subject? Subject { get; set; }
     }
 }
