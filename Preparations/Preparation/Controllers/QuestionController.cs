@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Preparation.Interfaces;
 using Preparation.Models;
 
@@ -7,10 +8,13 @@ namespace Preparation.Controllers
     public class QuestionController : Controller
     {
         private readonly IQuestion _questionRepository;
-        public QuestionController(IQuestion questionRepository)
+        private readonly ISubject _subjectRepository;
+        public QuestionController(IQuestion questionRepository, ISubject subjectRepository)
         {
             _questionRepository = questionRepository;
+            _subjectRepository = subjectRepository;
         }
+
 
         public async Task<IActionResult> Index()
         {
@@ -23,6 +27,7 @@ namespace Preparation.Controllers
         public IActionResult Create()
         {
             var item = new Question();
+            PopulateViewBagsAsync().GetAwaiter().GetResult();
 
             return View(item);
         }
@@ -35,7 +40,7 @@ namespace Preparation.Controllers
                 await _questionRepository.GreateAsync(question);
                 return RedirectToAction(nameof(Index));
             }
-
+            await PopulateViewBagsAsync();
             return View(question);
         }
 
@@ -43,6 +48,7 @@ namespace Preparation.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var item = await _questionRepository.GetItemAsync(id);
+            await PopulateViewBagsAsync();
 
             if (item != null)
             {
@@ -60,7 +66,7 @@ namespace Preparation.Controllers
                 await _questionRepository.EditAsync(question);
                 return RedirectToAction(nameof(Index));
             }
-
+            await PopulateViewBagsAsync();
             return View(question);
         }
 
@@ -103,5 +109,34 @@ namespace Preparation.Controllers
 
             return NotFound();
         }
+
+
+        private async Task PopulateViewBagsAsync()
+        {
+            ViewBag.Subjects = await GetSubjectsAsync();
+        }
+
+        private async Task<List<SelectListItem>> GetSubjectsAsync()
+        {
+            List<SelectListItem> listIItems = new List<SelectListItem>();
+
+            List<Subject> items = await _subjectRepository.GetItemsAsync();
+
+            listIItems = items.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString()
+            }).ToList();
+
+            SelectListItem defItem = new SelectListItem()
+            {
+                Text = "---Select Subject---",
+                Value = ""
+            };
+
+            listIItems.Insert(0, defItem);
+            return listIItems;
+        }
+
     }
 }
