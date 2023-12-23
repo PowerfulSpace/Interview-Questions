@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Preparation.styles.css" asp-append-version="true" />
 </head>
+
+@{
+    string menuTextColor = "text-dark";
+}
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -22,6 +27,21 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+
+                        <li class="dropdown nav-item pr-2">
+                            <a class="nav-link dropdown-toggle @menuTextColor" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Master
+                            </a>
+                            <ul class="dropdown-menu" style="background:linear-gradient(to right,#ffffff,#A9A9A9)">
+                                <li class="nav-item">
+                                    <a class="nav-link @menuTextColor" asp-area="" asp-controller="Subject" asp-action="Index">Subjects</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @menuTextColor" asp-area="" asp-controller="Question" asp-action="Index">Questions</a>
+                                </li>
+                            </ul>
+                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
