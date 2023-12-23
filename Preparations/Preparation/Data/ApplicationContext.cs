@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Preparation.Data.Configurations;
 using Preparation.Models;
 
 namespace Preparation.Data
@@ -14,7 +15,8 @@ namespace Preparation.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            modelBuilder.ApplyConfiguration(new SubjectConfiguration());
+            modelBuilder.ApplyConfiguration(new QuestionConfiguration());
         }
     }
 }
