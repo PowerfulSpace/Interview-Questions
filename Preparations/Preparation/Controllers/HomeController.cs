@@ -18,6 +18,15 @@ namespace Preparation.Controllers
             return View();
         }
 
+        public IActionResult CSharp()
+        {
+            return View();
+        }
+        public IActionResult SQL()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
