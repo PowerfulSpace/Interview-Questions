@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Preparation.Interfaces;
 using Preparation.Models;
 using System.Diagnostics;
 
@@ -8,9 +9,12 @@ namespace Preparation.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ISubject _subjectRepository;
+
+        public HomeController(ILogger<HomeController> logger, ISubject subjectRepository)
         {
             _logger = logger;
+            _subjectRepository = subjectRepository;
         }
 
         public IActionResult Index()
@@ -18,13 +22,22 @@ namespace Preparation.Controllers
             return View();
         }
 
-        public IActionResult CSharp()
+        [HttpGet]
+        public async Task<IActionResult> CSharp()
         {
-            return View();
+            List<Subject> items = await _subjectRepository.GetItemsAsync();
+            var item = items.Where(x => x.Name == "C#").FirstOrDefault();
+
+            return View(item);
         }
-        public IActionResult SQL()
+
+        [HttpGet]
+        public async Task<IActionResult> SQL()
         {
-            return View();
+            List<Subject> items = await _subjectRepository.GetItemsAsync();
+            var item = items.Where(x => x.Name == "SQL").FirstOrDefault();
+
+            return View(item);
         }
 
         public IActionResult Privacy()
