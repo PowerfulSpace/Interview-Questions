@@ -22,24 +22,6 @@ namespace Preparation.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> CSharp()
-        {
-            List<Subject> items = await _subjectRepository.GetItemsAsync();
-            var item = items.Where(x => x.Name == "C#").FirstOrDefault();
-
-            return View(item);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> SQL()
-        {
-            List<Subject> items = await _subjectRepository.GetItemsAsync();
-            var item = items.Where(x => x.Name == "SQL").FirstOrDefault();
-
-            return View(item);
-        }
-
 
         [HttpGet]
         public async Task<IActionResult> GetQuestions(string subject)
