@@ -40,6 +40,17 @@ namespace Preparation.Controllers
             return View(item);
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetQuestions(string subject)
+        {
+            List<Subject> items = await _subjectRepository.GetItemsAsync();
+            var item = items.Where(x => x.Name == subject).FirstOrDefault();
+
+            return View(item);
+        }
+
+
         public IActionResult Privacy()
         {
             return View();

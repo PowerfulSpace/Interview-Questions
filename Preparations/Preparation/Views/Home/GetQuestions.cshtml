@@ -1,0 +1,31 @@
+﻿@model Subject
+
+@{
+    int number = 1;
+}
+
+
+<div class="accordion" id="accordionExample">
+
+    @foreach (var qestion in Model.Questions)
+    {
+
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading_@qestion.Id">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_@qestion.Id">
+                    <div class="row col-12">
+                        <div class="col-1">@(number++)</div>
+                        <div class="col-11">@qestion.Name</div>
+                    </div>
+                </button>
+            </h2>
+            <div id="collapse_@qestion.Id" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    @qestion.Answer
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
