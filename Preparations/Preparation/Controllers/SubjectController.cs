@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer.Localisation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Preparation.Interfaces;
 using Preparation.Models;
 
@@ -7,14 +10,39 @@ namespace Preparation.Controllers
     public class SubjectController : Controller
     {
         private readonly ISubject _subjectRepository;
-        public SubjectController(ISubject subjectRepository)
+        private readonly IQuestion _questionRepository;
+        public SubjectController(ISubject subjectRepository, IQuestion questionRepository)
         {
             _subjectRepository = subjectRepository;
+            _questionRepository = questionRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortExpression = "", string searchText = "", int currentPage = 1, int pageSize = 5)
         {
-            var items = await _subjectRepository.GetItemsAsync();
+            SortModel sortModel = new SortModel();
+            sortModel.AddColumn("name");
+            sortModel.ApplySort(sortExpression);
+
+
+            PaginatedList<Subject> items = await _subjectRepository.GetItemsAsync(sortModel.SortedProperty, sortModel.SortedOrder, searchText, currentPage, pageSize);
+
+            var pager = new PagerModel(items.TotalRecords, currentPage, pageSize);
+            pager.SortExpression = sortExpression;
+            pager.SearchText = searchText;
+
+            ViewBag.Pager = pager;
+
+            ViewData["SortModel"] = sortModel;
+            ViewBag.SearchText = searchText;
+
+            TempData["SearchText"] = searchText;
+            TempData.Keep("SearchText");
+
+            TempData["PageSize"] = pageSize;
+            TempData.Keep("PageSize");
+
+            TempData["CurrentPage"] = currentPage;
+            TempData.Keep("CurrentPage");
 
             return View(items);
         }
@@ -23,6 +51,8 @@ namespace Preparation.Controllers
         public IActionResult Create()
         {
             var item = new Subject();
+
+            PopulateViewBagsAsync().GetAwaiter().GetResult();
 
             return View(item);
         }
@@ -33,6 +63,7 @@ namespace Preparation.Controllers
             if(ModelState.IsValid)
             {
                 await _subjectRepository.GreateAsync(subject);
+                await PopulateViewBagsAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -46,6 +77,8 @@ namespace Preparation.Controllers
 
             if(item != null)
             {
+                await PopulateViewBagsAsync();
+
                 return View(item);
             }
 
@@ -58,6 +91,9 @@ namespace Preparation.Controllers
             if (ModelState.IsValid)
             {
                 await _subjectRepository.EditAsync(subject);
+
+                await PopulateViewBagsAsync();
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -103,5 +139,34 @@ namespace Preparation.Controllers
 
             return NotFound();
         }
+
+
+        private async Task PopulateViewBagsAsync()
+        {
+            ViewBag.Questions = await GetQuestionsAsync();
+        }
+
+        private async Task<List<SelectListItem>> GetQuestionsAsync()
+        {
+            List<SelectListItem> listIItems = new List<SelectListItem>();
+
+            List<Question> items = await _questionRepository.GetItemsAsync("name", SortOrder.Ascending, "", 1, 1000);
+
+            listIItems = items.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString()
+            }).ToList();
+
+            SelectListItem defItem = new SelectListItem()
+            {
+                Text = "---Select Subject---",
+                Value = ""
+            };
+
+            listIItems.Insert(0, defItem);
+            return listIItems;
+        }
+
     }
 }

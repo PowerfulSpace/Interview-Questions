@@ -1,25 +1,53 @@
 ﻿@model IEnumerable<Question>
 
 @{
-    ViewData["Title"] = "Index";
-}
+    string currentModel = Helper.GetTypeName(Model.GetType().ToString());
 
+    ViewData["Title"] = @currentModel + " - Index";
+    SortModel sortModel = (SortModel)ViewData["sortModel"];
+    PagerModel pagerModel = ViewBag.Pager;
+}
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
+
+<div class="container-fluid btn-group">
+    <div class="col-10">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+    <div class="col-2 justify-content-end">
+        <p>
+            <a asp-action="Create" class="btn btn-success" style="border-radius:10px;background-color:#87CEFA;border-color: black;color:black;">Create New</a>
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <partial name="Partial/PartialPageBars/_topBar" model="pagerModel" />
+    </div>
+</div>
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <i class="@sortModel.GetColumn("name").SortIcon" arial-hidden="true"></i>
+                <a asp-action="Index" asp-route-sortExpression="@sortModel.GetColumn("name").SortExpression" asp-route-currentPage="@TempData.Peek("CurrentPage")" asp-route-pageSize="@TempData.Peek("PageSize")" asp-route-searchText="@TempData.Peek("SearchText")" style="color:black;text-decoration: none;">
+                    @Html.DisplayNameFor(model => model.Name)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Answer)
+                <i class="@sortModel.GetColumn("answer").SortIcon" arial-hidden="true"></i>
+                <a asp-action="Index" asp-route-sortExpression="@sortModel.GetColumn("answer").SortExpression" asp-route-currentPage="@TempData.Peek("CurrentPage")" asp-route-pageSize="@TempData.Peek("PageSize")" asp-route-searchText="@TempData.Peek("SearchText")" style="color:black;text-decoration: none;">
+                    @Html.DisplayNameFor(model => model.Answer)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Subject)
+                <i class="@sortModel.GetColumn("subject").SortIcon" arial-hidden="true"></i>
+                <a asp-action="Index" asp-route-sortExpression="@sortModel.GetColumn("subject").SortExpression" asp-route-currentPage="@TempData.Peek("CurrentPage")" asp-route-pageSize="@TempData.Peek("PageSize")" asp-route-searchText="@TempData.Peek("SearchText")" style="color:black;text-decoration: none;">
+                    @Html.DisplayNameFor(model => model.Subject)
+                </a>
             </th>
             <th></th>
         </tr>
@@ -45,3 +73,10 @@
 }
     </tbody>
 </table>
+
+
+<div class="row">
+    <div class="col-12">
+        <partial name="Partial/PartialPageBars/_bottomBar" model="pagerModel" />
+    </div>
+</div>

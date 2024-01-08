@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Preparation.Interfaces;
 using Preparation.Models;
 using System.Diagnostics;
@@ -26,7 +27,7 @@ namespace Preparation.Controllers
         [HttpGet]
         public async Task<IActionResult> GetQuestions(string subject)
         {
-            List<Subject> items = await _subjectRepository.GetItemsAsync();
+            List<Subject> items = await _subjectRepository.GetItemsAsync("name", SortOrder.Ascending, "", 1, 1000);
             var item = items.Where(x => x.Name == subject).FirstOrDefault();
 
             return View(item);

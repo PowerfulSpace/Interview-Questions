@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Preparation.Interfaces;
 using Preparation.Models;
 
@@ -16,9 +17,34 @@ namespace Preparation.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortExpression = "", string searchText = "", int currentPage = 1, int pageSize = 5)
         {
-            var items = await _questionRepository.GetItemsAsync();
+
+            SortModel sortModel = new SortModel();
+            sortModel.AddColumn("name");
+            sortModel.AddColumn("answer");
+            sortModel.AddColumn("subject");
+            sortModel.ApplySort(sortExpression);
+
+            PaginatedList<Question> items = await _questionRepository.GetItemsAsync(sortModel.SortedProperty, sortModel.SortedOrder, searchText, currentPage, pageSize);
+
+            var pager = new PagerModel(items.TotalRecords, currentPage, pageSize);
+            pager.SortExpression = sortExpression;
+            pager.SearchText = searchText;
+
+            ViewBag.Pager = pager;
+
+            ViewData["SortModel"] = sortModel;
+            ViewBag.SearchText = searchText;
+
+            TempData["SearchText"] = searchText;
+            TempData.Keep("SearchText");
+
+            TempData["PageSize"] = pageSize;
+            TempData.Keep("PageSize");
+
+            TempData["CurrentPage"] = currentPage;
+            TempData.Keep("CurrentPage");
 
             return View(items);
         }
@@ -120,7 +146,7 @@ namespace Preparation.Controllers
         {
             List<SelectListItem> listIItems = new List<SelectListItem>();
 
-            List<Subject> items = await _subjectRepository.GetItemsAsync();
+            List<Subject> items = await _subjectRepository.GetItemsAsync("name", SortOrder.Ascending, "", 1, 1000);
 
             listIItems = items.Select(x => new SelectListItem()
             {
